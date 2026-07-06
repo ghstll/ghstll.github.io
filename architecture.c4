@@ -1,0 +1,41 @@
+specification {
+  element actor
+  element system
+  element component
+  element service
+
+}
+
+model {
+  customer = actor 'Customer' 
+  auth_service = service 'Auth service' {
+    technology ''
+  }
+  saas = system 'Our SaaS' {
+    component ui 'Frontend' 
+    component backend 'Backend Services' 
+
+    ui -> backend 'fetches via HTTPS'
+  }
+
+  saas.backend -> auth_service
+  customer -> ui 'opens in browser'
+}
+
+views {
+
+  view index {
+    title 'Landscape view'
+
+    include *
+  }
+
+  view of saas {
+    include *
+
+    style customer {
+      color muted
+    }
+  }
+
+}
