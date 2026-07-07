@@ -47,7 +47,7 @@ jobs:
         run : bunx likec4@latest validate
         
       - name : Run vitest tests
-        run : bunx npx run vitest
+        run : bunx npx vitest run
     
   build-pages:
     needs : validate
