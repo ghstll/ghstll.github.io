@@ -3,39 +3,55 @@ specification {
   element system
   element component
   element service
+  element database
 
 }
 
 model {
-  customer = actor 'Customer' 
-  auth_service = service 'Auth service' {
-    technology ''
-  }
-  saas = system 'Our SaaS' {
-    component ui 'Frontend' 
-    component backend 'Backend Services' 
+  actor customer
 
-    ui -> backend 'fetches via HTTPS'
+  actor admin
+
+  sys = system {
+    component frontend
+    component admin_panel
+
+    api_backend = component {
+      component auth
+      component catalog
+      component orders
+      component notifications
+    }
+    database postgres_db
   }
 
-  saas.backend -> auth_service
-  customer -> ui 'opens in browser'
+  service payment_service
+  service email_service
+
+  customer -> frontend
+
+  admin -> admin_panel
+
+  frontend -> api_backend
+
+  api_backend -> postgres_db
+
+
+
 }
+
 
 views {
 
   view index {
-    title 'Landscape view'
-
+    include *
+  }
+  view of sys {
     include *
   }
 
-  view of saas {
-    include *
-
-    style customer {
-      color muted
-    }
+  view components {
+    include * where kind is component
   }
 
 }
