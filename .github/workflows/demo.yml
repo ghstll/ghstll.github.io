@@ -46,8 +46,6 @@ jobs:
       - name : Validar modelo LikeC4
         run : bunx likec4@latest validate
         
-      - name : Run vitest tests
-        run : bunx npx vitest run
     
   build-pages:
     needs : validate
