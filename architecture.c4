@@ -4,7 +4,6 @@ specification {
   element component
   element service
   element database
-
 }
 
 model {
@@ -25,8 +24,12 @@ model {
     database postgres_db
   }
 
-  service payment_service
-  service email_service
+  payment_service = service {
+    technology 'Stripe'
+  }
+  email_service = service {
+    technology 'Amazon SES'
+  }
 
   customer -> frontend
 

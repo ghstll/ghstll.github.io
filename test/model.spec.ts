@@ -1,23 +1,18 @@
-import {LikeC4} from 'likec4'
-import {expect, test} from 'vitest'
+import { LikeC4 } from 'likec4'
+import { test } from 'vitest'
+const likec4 = await LikeC4.fromWorkspace('.')
+const model = await likec4.computedModel()
 
-const likec4 = await LikeC4.fromWorkspace('../architecture.c4')
+console.log(model.elements().toArray())
 
 
-test('el modelo no tiene errores',({expect}) =>{
-  expect(likec4.getErrors()).toEqual([])
-  
-
+test('Validar errores', ({ expect }) => {
+  expect(likec4.hasErrors()).toBeFalsy()
 })
 
-test('cada servicio debe tener su tecnologia definida',async ({expect}) =>{
-  const model = await likec4.computedModel()
-  expect.hasAssertions()
+test.for(
+  model.elementsWhere({ kind: 'service' }).map(el => [el.id, el] as const).toArray(),
+)('service "%s" tiene tecnologia', ([, el], { expect }) => {
+  expect(el.technology).toBeTruthy()
+}) 
 
-  for(const element of model.elements()){
-    if(element.kind !== 'service') continue
-
-    expect.soft(element.technology,`el elemento ${element.id} no tiene tecnologia`).toBeTruthy()
-
-  }
-})

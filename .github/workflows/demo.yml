@@ -24,7 +24,33 @@ concurrency:
 
 jobs:
   # Build job
+  
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Instalar dependencias
+        run: bun install
+
+      - name: Correr tests
+        run: bunx vitest run
+
+  validate:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses : actions/checkout@v5
+      - uses : oven-sh/setup-bun@v2
+      - name : Validar modelo LikeC4
+        run : bunx likec4@latest validate
+        
+      - name : Run vitest tests
+        run : bunx npx run vitest
+    
   build-pages:
+    needs : validate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -39,11 +65,20 @@ jobs:
             --base "${{ steps.pages.outputs.base_path || '/' }}" \
             --output dist
 
-      - name: upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Commit y push del build 
+        uses: stefanzweifel/git-auto-commit-action@v7 
+
+        with :
+          commit_message : "architecture update : actualizar build de LikeC4"
+          file_pattern : dist
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v333
         with:
           path: ./dist
 
+      
+          
   # Deployment job
   deploy-pages:
     environment:
