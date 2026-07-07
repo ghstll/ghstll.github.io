@@ -71,7 +71,7 @@ jobs:
           file_pattern : dist
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v333
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
